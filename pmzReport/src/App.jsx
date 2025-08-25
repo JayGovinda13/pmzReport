@@ -185,20 +185,31 @@ function App() {
     const muiTheme = useTheme();
     const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));
 
+    // Centralized data source
+    const operationalData = [
+        { month: 'January', onTime: 2630, delayed: 8594, incomplete: 12150 },
+        { month: 'February', onTime: 7569, delayed: 14123, incomplete: 5094 },
+        { month: 'March', onTime: 5698, delayed: 14453, incomplete: 6464 },
+        { month: 'April', onTime: 4044, delayed: 11449, incomplete: 9227 },
+        { month: 'May', onTime: 4228, delayed: 9430, incomplete: 11140 },
+        { month: 'June', onTime: 3952, delayed: 6418, incomplete: 12040 },
+        { month: 'July', onTime: 5710, delayed: 9057, incomplete: 10468 },
+        { month: 'August', onTime: 4854, delayed: 5434, incomplete: 7511 }
+    ];
+
+    const labels = operationalData.map(d => d.month);
+
     const monthlyPerformanceData = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August'],
+        labels: labels,
         datasets: [{
             label: 'Delivery Completion Rate (%)',
-            data: [
-                ((2630 + 8594) / (2630 + 8594 + 12150) * 100).toFixed(1), // Jan: 48.0
-                83.3, // Feb: As per text
-                ((5698 + 14453) / (5698 + 14453 + 6464) * 100).toFixed(1), // Mar: 75.7
-                ((4044 + 11449) / (4044 + 11449 + 9227) * 100).toFixed(1), // Apr: 62.7
-                ((4228 + 9430) / (4228 + 9430 + 11140) * 100).toFixed(1), // May: 55.1
-                50.0, // Jun: As per text
-                ((5710 + 9057) / (5710 + 9057 + 10468) * 100).toFixed(1), // Jul: 58.6
-                ((4854 + 5434) / (4854 + 5434 + 7511) * 100).toFixed(1)  // Aug: 57.7
-            ],
+            data: operationalData.map(d => {
+                if (d.month === 'February') return 83.3;
+                if (d.month === 'June') return 50.0;
+                const total = d.onTime + d.delayed + d.incomplete;
+                if (total === 0) return 0;
+                return (((d.onTime + d.delayed) / total) * 100).toFixed(1);
+            }),
             borderColor: theme.palette.secondary.main,
             backgroundColor: 'rgba(88, 80, 141, 0.1)',
             fill: true,
@@ -207,11 +218,11 @@ function App() {
     };
     
     const deliveryQualityData = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August'],
+        labels: labels,
         datasets: [
-            { label: 'On-Time Deliveries (App)', data: [2630, 7569, 5698, 4044, 4228, 3952, 5710, 4854], backgroundColor: theme.palette.primary.main },
-            { label: wrapLabel('Delayed/Incorrect Use'), data: [8594, 14123, 14453, 11449, 9430, 6418, 9057, 5434], backgroundColor: theme.palette.warning.main },
-            { label: wrapLabel('Incomplete Deliveries (App)'), data: [12150, 5094, 6464, 9227, 11140, 12040, 10468, 7511], backgroundColor: theme.palette.error.main }
+            { label: 'On-Time Deliveries (App)', data: operationalData.map(d => d.onTime), backgroundColor: theme.palette.primary.main },
+            { label: wrapLabel('Delayed/Incorrect Use'), data: operationalData.map(d => d.delayed), backgroundColor: theme.palette.warning.main },
+            { label: wrapLabel('Incomplete Deliveries (App)'), data: operationalData.map(d => d.incomplete), backgroundColor: theme.palette.error.main }
         ]
     };
 
