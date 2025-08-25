@@ -19,29 +19,33 @@ import {
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 import Chart from 'chart.js/auto';
 
-// PALETTE: Brilliant Blues
+// PALETTE: Bringoz Brand Colors
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#003F5C',
+            main: '#002D42', // Bringoz Dark Navy
         },
         secondary: {
-            main: '#58508D',
+            main: '#00A9E0', // Bringoz Blue
         },
         warning: {
-            main: '#FFA600',
+            main: '#F58220', // Bringoz Orange
         },
         error: {
-            main: '#BC5090',
+            main: '#E53935', // A suitable red for contrast
+        },
+        success: {
+            main: '#4CAF50', // Green for "In Progress"
         },
         background: {
-            default: '#f8f9fa',
+            default: '#f7f9fa',
             paper: '#ffffff',
         },
         text: {
-            primary: '#333',
+            primary: '#231F20',
             secondary: '#555',
         },
     },
@@ -127,7 +131,7 @@ const KpiCard = ({ title, value, description, color }) => (
     <Grid item xs={12} md={4}>
         <Card sx={{ height: '100%', boxShadow: 3 }}>
             <CardContent sx={{ textAlign: 'center', p: 3 }}>
-                <Typography variant="h6" color="secondary" gutterBottom>{title}</Typography>
+                <Typography variant="h6" color="text.secondary" gutterBottom>{title}</Typography>
                 <Typography variant="h3" component="p" fontWeight="bold" color={color} my={1}>{value}</Typography>
                 <Typography variant="body2" color="text.secondary">{description}</Typography>
             </CardContent>
@@ -135,11 +139,11 @@ const KpiCard = ({ title, value, description, color }) => (
     </Grid>
 );
 
-const ActionStep = ({ number, title, description }) => (
+const ActionStep = ({ number, title, description, inProgress = false, completed = false }) => (
      <Box sx={{ textAlign: 'center', maxWidth: 280 }}>
         <Box
             sx={{
-                bgcolor: 'primary.main',
+                bgcolor: completed ? 'secondary.main' : (inProgress ? 'success.main' : 'primary.main'),
                 color: 'white',
                 width: 64,
                 height: 64,
@@ -151,9 +155,9 @@ const ActionStep = ({ number, title, description }) => (
                 mb: 2,
             }}
         >
-            <Typography variant="h4" fontWeight="bold">{number}</Typography>
+            {completed ? <CheckCircleIcon sx={{ fontSize: 32 }} /> : (inProgress ? <AutorenewIcon sx={{ fontSize: 32 }} /> : <Typography variant="h4" fontWeight="bold">{number}</Typography>)}
         </Box>
-        <Typography variant="h6" color="secondary" gutterBottom>{title}</Typography>
+        <Typography variant="h6" color="primary" gutterBottom>{title}</Typography>
         <Typography variant="body2" color="text.secondary">{description}</Typography>
     </Box>
 );
@@ -163,7 +167,7 @@ function App() {
     const muiTheme = useTheme();
     const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));
 
-    // Fonte de dados centralizada e corrigida
+    // Centralized and corrected data source
     const operationalData = [
         { month: 'January', onTime: 2630, delayed: 8594, incomplete: 12150 },
         { month: 'February', onTime: 7569, delayed: 14123, incomplete: 5094 },
@@ -180,7 +184,7 @@ function App() {
     const monthlyPerformanceData = {
         labels: labels,
         datasets: [{
-            label: 'Delivery Completion Rate (%)',
+            label: 'Completion Rate (%)',
             data: operationalData.map(d => {
                 if (d.month === 'February') return 83.3;
                 if (d.month === 'June') return 50.0;
@@ -189,7 +193,7 @@ function App() {
                 return (((d.onTime + d.delayed) / total) * 100).toFixed(1);
             }),
             borderColor: theme.palette.secondary.main,
-            backgroundColor: 'rgba(88, 80, 141, 0.1)',
+            backgroundColor: 'rgba(0, 169, 224, 0.1)',
             fill: true,
             tension: 0.3,
         }],
@@ -212,21 +216,21 @@ function App() {
                         <Typography variant="h2" component="h1" align="center" color="primary" gutterBottom sx={{ mb: 1 }}>
                             Performance Report and Strategic Analysis
                         </Typography>
-                        <Typography variant="h5" align="center" color="secondary" sx={{ mb: 6 }}>
+                        <Typography variant="h5" align="center" color="text.secondary" sx={{ mb: 6 }}>
                             PMZ Operation | January to August 2025
                         </Typography>
                     </header>
 
                     <Grid container spacing={4} sx={{ mb: 6 }}>
-                        <KpiCard title="Peak Performance (Feb)" value="83.3%" description="App-based delivery completion rate, driven by the technical visit to Manaus." color="primary.main" />
-                        <KpiCard title="Main Challenge" value="14,453" description="Peak of delayed or incorrectly logged deliveries (March). This high number indicates the core issue is operational execution, not technology adoption." color="warning.main" />
-                        <KpiCard title="Geofence Status" value="81.8%" description="Stable performance during the implementation week, serving as a baseline for future impact analysis." color="primary.main" />
+                        <KpiCard title="Peak Performance (Feb)" value="83.3%" description="App-based delivery completion rate, driven by the technical visit to Manaus." color="secondary.main" />
+                        <KpiCard title="Main Challenge" value="14,453" description="Peak of delayed or incorrectly logged deliveries (March). This high number indicates the core issue is operational execution." color="warning.main" />
+                        <KpiCard title="Geofence Status" value="81.8%" description="Stable performance during the implementation week, serving as a baseline for future impact analysis." color="secondary.main" />
                     </Grid>
 
                     <Paper sx={{ p: { xs: 2, md: 4 }, mb: 6, boxShadow: 3 }}>
                         <Typography variant="h4" align="center" color="primary" gutterBottom>Monthly Performance Analysis</Typography>
                         <Typography align="center" color="text.secondary" sx={{ maxWidth: '800px', mx: 'auto', mb: 3 }}>
-                            The app-based delivery completion rate showed considerable volatility, indicating that positive impacts have been event-driven rather than sustained by process. The peak in February, tied to the technical visit, contrasts sharply with the low in June, highlighting a need for more robust, permanent operational controls.
+                            The app-based delivery completion rate showed volatility, indicating that positive impacts were event-driven rather than sustained by process. The peak in February, tied to the technical visit, contrasts with the low in June, highlighting the need for more robust, permanent operational controls.
                         </Typography>
                         <Box sx={{ height: '400px' }}>
                             <LineChart data={monthlyPerformanceData} options={{...commonChartOptions, scales: { y: { beginAtZero: true, max: 100, ticks: { callback: (value) => value + '%' } }}}} />
@@ -236,7 +240,7 @@ function App() {
                     <Paper sx={{ p: { xs: 2, md: 4 }, mb: 6, boxShadow: 3 }}>
                         <Typography variant="h4" align="center" color="primary" gutterBottom>Delivery Quality: Detailed Analysis</Typography>
                         <Typography align="center" color="text.secondary" sx={{ maxWidth: '800px', mx: 'auto', mb: 3 }}>
-                           This breakdown is crucial: it shows that drivers are using the app, but a significant portion of deliveries are either late or logged incorrectly. This confirms the primary bottleneck is in the physical execution of the delivery process (route planning, time management) rather than a failure to adopt the digital tool.
+                           This analysis is crucial: it shows that drivers use the app, but a significant portion of deliveries are late or incorrectly logged. This confirms the main bottleneck is in the physical execution of the delivery process.
                         </Typography>
                         <Box sx={{ height: '400px' }}>
                             <BarChart data={deliveryQualityData} options={{...commonChartOptions, scales: { x: { stacked: true }, y: { stacked: true } }}} />
@@ -249,11 +253,11 @@ function App() {
                             <Grid item xs={12} md={6}>
                                 <Card sx={{ height: '100%', boxShadow: 3 }}>
                                     <CardContent sx={{p:3}}>
-                                        <Typography variant="h5" color="secondary" gutterBottom>Technical Visit in Manaus (February)</Typography>
+                                        <Typography variant="h5" color="primary" gutterBottom>Technical Visit in Manaus (February)</Typography>
                                         <Typography color="text.secondary" sx={{mb: 2}}>The initiative showed a positive and immediate impact. Close monitoring and on-site process optimization were crucial.</Typography>
-                                        <Paper variant="outlined" sx={{ p: 2, bgcolor: '#E6F0FF' }}>
+                                        <Paper variant="outlined" sx={{ p: 2, bgcolor: 'rgba(0, 169, 224, 0.1)' }}>
                                             <Typography fontWeight="bold" color="primary.dark">Key Takeaway:</Typography>
-                                            <Typography color="primary.dark">Direct managerial oversight is a powerful but temporary catalyst. The key is to codify the successful on-site adjustments into standard operating procedures (SOPs) that can be monitored and enforced remotely to ensure long-term stability.</Typography>
+                                            <Typography color="primary.dark">Direct managerial oversight is a powerful but temporary catalyst. The key is to turn successful adjustments into standard operating procedures (SOPs) to ensure long-term stability.</Typography>
                                         </Paper>
                                     </CardContent>
                                 </Card>
@@ -261,11 +265,11 @@ function App() {
                             <Grid item xs={12} md={6}>
                                 <Card sx={{ height: '100%', boxShadow: 3 }}>
                                     <CardContent sx={{p:3}}>
-                                        <Typography variant="h5" color="secondary" gutterBottom>Geofence Implementation (August)</Typography>
+                                        <Typography variant="h5" color="primary" gutterBottom>Geofence Implementation (August)</Typography>
                                         <Typography color="text.secondary" sx={{mb: 2}}>A direct technological action to mitigate the operation's main weakness. By automating location verification, the geofence aims to:</Typography>
                                         <List dense>
                                             <ListItem><ListItemText primary="Increase punctuality and optimize routes" secondary="By providing precise data on arrival and departure times." /></ListItem>
-                                            <ListItem><ListItemText primary="Ensure compliance of the delivery registration location" secondary="By preventing delivery confirmation outside the designated area." /></ListItem>
+                                            <ListItem><ListItemText primary="Ensure compliance of the registration location" secondary="By preventing delivery confirmation outside the designated area." /></ListItem>
                                             <ListItem><ListItemText primary="Improve data reliability for future analysis" secondary="By automating data entry and eliminating manual errors." /></ListItem>
                                         </List>
                                     </CardContent>
@@ -278,7 +282,7 @@ function App() {
                         <Typography variant="h4" align="center" color="primary" sx={{ mb: 4 }}>Data Integrity and Operational Cleanup</Typography>
                         <Paper sx={{ p: { xs: 2, md: 4 }, maxWidth: '900px', mx: 'auto', boxShadow: 3 }}>
                             <Typography align="center" color="text.secondary" sx={{ mb: 3 }}>
-                                To build a foundation of trustworthy data, a full audit and cleanup of the driver database was conducted. This foundational work is critical for accurate performance measurement and ensures that operational communications reach the correct, active personnel.
+                                To build a reliable database, a full audit and cleanup of the driver database was conducted. This is essential for accurate performance measurement and ensures that communications reach the correct, active personnel.
                             </Typography>
                             <List>
                                 <ListItem>
@@ -287,14 +291,14 @@ function App() {
                                 </ListItem>
                                 <ListItem>
                                     <ListItemIcon><CheckCircleIcon color="success" /></ListItemIcon>
-                                    <ListItemText primary="Carrier Registration:" secondary="Registered transport carriers and linked drivers to their respective companies." />
+                                    <ListItemText primary="Carrier Registration:" secondary="Registered carriers and linked drivers to their respective companies." />
                                 </ListItem>
                             </List>
                         </Paper>
                     </Box>
 
                     <Paper sx={{ p: { xs: 2, md: 4 }, boxShadow: 3 }}>
-                        <Typography variant="h4" align="center" color="primary" sx={{ mb: 4 }}>Recommended Action Plan</Typography>
+                        <Typography variant="h4" align="center" color="primary" sx={{ mb: 4 }}>Action Plan</Typography>
                         <Stack
                             direction={isMobile ? 'column' : 'row'}
                             spacing={isMobile ? 4 : 2}
@@ -302,9 +306,9 @@ function App() {
                             alignItems="center"
                             divider={!isMobile && <ArrowForwardIcon sx={{ color: 'grey.400', fontSize: 40 }} />}
                         >
-                            <ActionStep number="1" title="KPI Monitoring" description="Create a dashboard to weekly monitor the geofence's impact and calculate its ROI. The goal is to quantitatively prove the technology's value." />
-                            <ActionStep number="2" title="Communication & Training" description="Conduct feedback sessions with drivers to identify difficulties and reinforce benefits. This ensures a smooth rollout and increases buy-in." />
-                            <ActionStep number="3" title="Process Audit" description="Map the controls from February and assess their feasibility for permanent implementation. The objective is to institutionalize what worked during the peak performance period." />
+                            <ActionStep completed={true} title="KPI Monitoring (Completed)" description="A daily report was created to monitor the geofence's impact, quantitatively proving the technology's value." />
+                            <ActionStep completed={true} title="Communication & Training (Completed)" description="Feedback sessions were held with drivers and cashiers to identify difficulties and reinforce benefits, ensuring a smooth rollout and increasing buy-in." />
+                            <ActionStep inProgress={true} title="Process Audit (In Progress)" description="Laryssa and Luiz Henrique are auditing the process daily to institutionalize what worked during the peak performance period." />
                         </Stack>
                     </Paper>
 
