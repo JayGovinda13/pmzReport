@@ -59,28 +59,6 @@ const theme = createTheme({
     },
 });
 
-const wrapLabel = (label) => {
-    const maxLength = 16;
-    if (label.length <= maxLength) {
-        return label;
-    }
-    const words = label.split(' ');
-    let lines = [];
-    let currentLine = '';
-    words.forEach(word => {
-        if ((currentLine + ' ' + word).length > maxLength) {
-            lines.push(currentLine.trim());
-            currentLine = word;
-        } else {
-            currentLine = (currentLine + ' ' + word).trim();
-        }
-    });
-    if (currentLine) {
-        lines.push(currentLine);
-    }
-    return lines;
-};
-
 const tooltipTitleCallback = (tooltipItems) => {
     const item = tooltipItems[0];
     let label = item.chart.data.labels[item.dataIndex];
@@ -185,7 +163,7 @@ function App() {
     const muiTheme = useTheme();
     const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));
 
-    // Centralized data source
+    // Fonte de dados centralizada e corrigida
     const operationalData = [
         { month: 'January', onTime: 2630, delayed: 8594, incomplete: 12150 },
         { month: 'February', onTime: 7569, delayed: 14123, incomplete: 5094 },
@@ -220,9 +198,9 @@ function App() {
     const deliveryQualityData = {
         labels: labels,
         datasets: [
-            { label: 'On-Time Deliveries (App)', data: operationalData.map(d => d.onTime), backgroundColor: theme.palette.primary.main },
-            { label: wrapLabel('Delayed/Incorrect Use'), data: operationalData.map(d => d.delayed), backgroundColor: theme.palette.warning.main },
-            { label: wrapLabel('Incomplete Deliveries (App)'), data: operationalData.map(d => d.incomplete), backgroundColor: theme.palette.error.main }
+            { label: 'On-Time (App)', data: operationalData.map(d => d.onTime), backgroundColor: theme.palette.primary.main },
+            { label: 'Delayed / Incorrect', data: operationalData.map(d => d.delayed), backgroundColor: theme.palette.warning.main },
+            { label: 'Incomplete (App)', data: operationalData.map(d => d.incomplete), backgroundColor: theme.palette.error.main }
         ]
     };
 
